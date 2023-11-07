@@ -1,123 +1,73 @@
-// Definición de variables y pedido de ingreso de datos.
+// Defino un array de productos. Que voy a mostrar como catalogo
 
-let nombreUsuario = prompt("Ingrese su nombre");
-let apellidoUsuario = prompt("Ingrese su apellido");
-let contraseniaIngresada = prompt("Ingrese su contraseña")
-const contraseniaCorrecta = "0000"
+let productos = [
+    { id: 1, titulo: "Remera blanca", precio: 2500 },
+    { id: 2, titulo: "Remera negra", precio: 2500 },
+    { id: 3, titulo: "Remera azul", precio: 2500 },
+    { id: 4, titulo: "Hoddie blanco", precio: 5000 },
+    { id: 5, titulo: "Hoddie negro", precio: 5000 },
+    { id: 6, titulo: "Hoddie azul", precio: 5000 },
+    { id: 7, titulo: "Rompeviento blanco", precio: 6000 },
+    { id: 8, titulo: "Rompeviento negro", precio: 6000 },
+    { id: 9, titulo: "Rompeviento azul", precio: 6000 },
+    { id: 10, titulo: "Jogging negro", precio: 7500 },
+    { id: 11, titulo: "Jogging blanco", precio: 7500 },
+    { id: 12, titulo: "Jogging azul", precio: 7500 },
+]
 
-// Se busca que se ingresen todos los datos. 
+localStorage.setItem("catalogo", JSON.stringify(productos))
 
-if ((nombreUsuario != "") && (apellidoUsuario != "")) {
-    console.log("Usuario: " + nombreUsuario + " " + apellidoUsuario);
-} else {
-    console.log("Todos los campos son obligatorios.");
+const productosLocalStorage = JSON.parse( localStorage.getItem( "catalogo" ) )
+
+const carrito = [];
+
+const divCatalogo = document.getElementById("catalogo")
+
+const divCarrito = document.getElementById("carrito")
+
+for (let i = 0; i < productosLocalStorage.length; i++) {
+    const producto = productosLocalStorage[i];
+
+    // PASO 1- Creo el elemento div vacio y lo guardo en una variable
+    let contenedor = document.createElement("div");
+
+    // PASO 2- Completo mi div vacio con el producto que quiero mostrar
+    // ACLARACION: Hasta este paso todavia NO esta en el HTML
+    contenedor.innerHTML = `
+     <div class="card mb-2" style="width: 18rem;">
+     <div class="card-body">
+      <h5 class="card-title">${producto.titulo}</h5>
+      <p class="card-text">$${producto.precio}</p>
+      <button onclick="añadirProducto(${i})" id="agregar-carrito-btn" class="btn btn-primary">Agregar al carrito</button>
+     </div>
+     </div>
+     `;
+
+     // PASO 3- (EL MAS IMPORTANTE) 
+     // Aca inyecto el div del producto que cree en los pasos 1 y 2
+     // Para que finalmente se vea en el HTML
+    divCatalogo.appendChild(contenedor);
 }
 
-let intentos = 1
-const maxIntentos = 3
-
-// FUNCION QUE RETORNA LA DIFERENCIA ENTRE EL MAXIMO DE INTENTOS ESTABLECIDO (limiteIntentos) Y LOS INTENTOS REALIZADOS (intentosRealizados)
-function intentosRestantes(limiteIntentos, intentosRealizados) {
-    return limiteIntentos - intentosRealizados;
-}
+function añadirProducto(index) {
+  const producto = productosLocalStorage[index];
+  carrito.push(producto);
+  console.log("Producto añadido al carrito: " + producto.titulo);
+  console.log(carrito);
 
 
-while (contraseniaIngresada != contraseniaCorrecta && intentos < maxIntentos) {
 
-    console.log("Contraseña incorrecta. Vuelve a intentarlo. Intentos: ", intentos)
+  let productoCarrito = document.createElement("div")
 
-    alert("Contraseña incorrecta. Vuelve a intentarlo. Intentos restantes: " + intentosRestantes(maxIntentos, intentos))
+  productoCarrito.innerHTML = `
+  <div class="card mb-2" style="width: 18rem;">
+  <div class="card-body">
+   <h5 class="card-title">${producto.titulo}</h5>
+   <p class="card-text">$${producto.precio}</p>
+   <button onclick="eliminarProducto(${producto})" id="agregar-carrito-btn" class="btn btn-danger">Eliminar del carrito</button>
+  </div>
+  </div>
+  `;
 
-    // ACTUALIZO CONTADOR DE INTENTOS FALLIDOS
-    intentos++
-    contraseniaIngresada = prompt("Ingrese su contraseña")
-}
-
-// SE INGRESO LA CONTRASEÑA CORRECTA. MENSAJE DE BIENVENIDA.
-if (contraseniaIngresada == contraseniaCorrecta) {
-    console.log("Inicio de sesión con éxito. Bienvenido a Indumentaria GL")
-    alert("Inicio de sesión con éxito. Bienvenido a Indumentaria GL")
-
-    let ropa = prompt(`Que prenda deseas ver?
-    1: Remeras
-    2: Hoddies
-    3: Rompevientos
-    4: Joggins
-    `)
-
-    // OBJECT
-    class Producto {
-        constructor(nombre, stock, precio, disponible) {
-            this.nombre = nombre;
-            this.stock = stock;
-            this.precio = precio;
-            this.disponible = true;
-        }
-    }
-
-    // INICIALIZO REMERAS
-    const remera1 = new Producto("Remera blanca", 2, 2500)
-    const remera2 = new Producto("Remera negra", 6, 2500)
-    const remera3 = new Producto("Remera azul", 1, 2500)
-
-    //INICIALIZANDO HODDIES
-    const hoddie1 = new Producto("Hoddie blanco", 3, 5000)
-    const hoddie2 = new Producto("Hoddie negro", 2, 5000)
-    const hoddie3 = new Producto("Hoddie azul", 7, 5000)
-
-    //INICIALIZANDO ROMPEVIENTOS
-    const rompeviento1 = new Producto("Rompeviento blanco", 7, 6000)
-    const rompeviento2 = new Producto("Rompeviento negro", 7, 6000)
-    const rompeviento3 = new Producto("Rompeviento azul", 6, 6000)
-
-    //INICIALIZANDO JOGGINGS
-    const jogging1 = new Producto("Jogging blanco", 6, 7500)
-    const jogging2 = new Producto("Jogging negro", 6, 7500)
-    const jogging3 = new Producto("Jogging azul", 6, 7500)
-
-
-    // ARRAY DE PRODUCTOS
-
-    const listaRemeras = [remera1, remera2, remera3]
-    const listaHoddies = [hoddie1, hoddie2, hoddie3]
-    const listaRompevientos = [rompeviento1, rompeviento2, rompeviento3]
-    const listaJoggings = [jogging1, jogging2, jogging3]
-
-
-    switch (ropa) {
-        case "Remeras":
-        case "1":
-            console.log("Sección remeras")
-            alert("Bienvenido a la sección Remeras!")
-            console.log(listaRemeras);
-            break
-        case "Hoddies":
-        case "2":
-            console.log("Sección Hoddies")
-            alert("Bienvenido a la sección Hoddies!")
-            console.log(listaHoddies);
-            break
-        case "Rompevientos":
-        case "3":
-            console.log("Sección Rompevientos")
-            alert("Bienvenido a la sección Rompevientos!")
-            console.log(listaRompevientos);
-            break
-        case "Joggins":
-        case "4":
-            console.log("Sección Joggings")
-            alert("Bienvenido a la sección Joggings!")
-            console.log(listaJoggings);
-            break
-        default:
-            console.log("No contamos con ese tipo de prenda")
-            alert("No contamos con ese tipo de prenda")
-            break
-    }
-}
-
-// SE ALCANZO EL LIMITE DE INTENTOS FALLIDOS. INTENTE NUEVAMENTE MAS TARDE.
-if (intentos == maxIntentos) {
-    console.log("Alcanzaste el limite de intentos fallidos. Vuelve a intentarlo mas tarde.");
-    alert("Alcanzaste el limite de intentos fallidos. Vuelve a intentarlo mas tarde.")
+  divCarrito.appendChild(productoCarrito);
 }
